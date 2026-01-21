@@ -2,15 +2,35 @@
 
 A Model Context Protocol (MCP) server that exposes the Synthetic web search API as a tool for use with Claude and other MCP-compatible applications.
 
+[![npm version](https://badge.fury.io/js/synthetic-web-search-mcp.svg)](https://www.npmjs.com/package/synthetic-web-search-mcp)
+
 ## Overview
 
 This server provides a `search_web` tool that allows MCP clients to perform web searches using the [Synthetic API](https://api.synthetic.new/). Search results are returned as formatted JSON containing URL, title, text, and published date fields.
 
 ## Installation
 
+Install globally to use with any MCP client:
+
 ```bash
-npm install
+npm install -g synthetic-web-search-mcp
 ```
+
+Or with Bun:
+
+```bash
+bun add -g synthetic-web-search-mcp
+```
+
+## Quick Start with Claude Code
+
+Add the MCP server to Claude Code with a single command:
+
+```bash
+claude mcp add synthetic-web-search -e SYNTHETIC_API_KEY=your_api_key_here -- synthetic-web-search-mcp
+```
+
+Replace `your_api_key_here` with your actual [Synthetic API key](https://api.synthetic.new/).
 
 ## Configuration
 
@@ -26,30 +46,6 @@ Or create a `.env` file in the project root (copy `.env.example`):
 SYNTHETIC_API_KEY=your_actual_api_key_here
 ```
 
-## Building
-
-Compile the TypeScript code:
-
-```bash
-npm run build
-```
-
-This creates a `dist/` directory with the compiled JavaScript files.
-
-## Development
-
-Run the dev server with ts-node:
-
-```bash
-npm run dev
-```
-
-Watch for file changes and rebuild automatically:
-
-```bash
-npm run watch
-```
-
 ## Usage with Claude Desktop
 
 To use this MCP server with Claude Desktop, add the following to your Claude Desktop configuration file:
@@ -61,8 +57,7 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
 {
   "mcpServers": {
     "synthetic-web-search": {
-      "command": "node",
-      "args": ["/absolute/path/to/synthetic-web-search-mcp/dist/index.js"],
+      "command": "synthetic-web-search-mcp",
       "env": {
         "SYNTHETIC_API_KEY": "your_actual_api_key_here"
       }
@@ -71,7 +66,21 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
 }
 ```
 
-Replace `/absolute/path/to/synthetic-web-search-mcp/dist/index.js` with the actual path to your project.
+If installed locally (not globally), use:
+
+```json
+{
+  "mcpServers": {
+    "synthetic-web-search": {
+      "command": "node",
+      "args": ["/absolute/path/to/project/dist/index.js"],
+      "env": {
+        "SYNTHETIC_API_KEY": "your_actual_api_key_here"
+      }
+    }
+  }
+}
+```
 
 After adding the configuration, restart Claude Desktop. You can then use the web search tool in your conversations.
 
@@ -80,7 +89,7 @@ After adding the configuration, restart Claude Desktop. You can then use the web
 To test the server without Claude Desktop, use the MCP inspector:
 
 ```bash
-npx @modelcontextprotocol/inspector node dist/index.js
+npx @modelcontextprotocol/inspector synthetic-web-search-mcp
 ```
 
 This will open a web interface where you can:
@@ -116,6 +125,34 @@ A JSON array of search results, each containing:
 - **Authentication**: Bearer token via `Authorization` header
 - **Request Body**: JSON with `query` field
 
+## Development
+
+Setup the development environment:
+
+```bash
+git clone https://github.com/parnexcodes/synthetic-web-search-mcp.git
+cd synthetic-web-search-mcp
+bun install
+```
+
+Build the project:
+
+```bash
+bun run build
+```
+
+Run the dev server with ts-node:
+
+```bash
+bun run dev
+```
+
+Watch for file changes and rebuild automatically:
+
+```bash
+bun run watch
+```
+
 ## Project Structure
 
 ```
@@ -133,4 +170,4 @@ synthetic-web-search-mcp/
 
 ## License
 
-MIT
+[MIT](https://github.com/parnexcodes/synthetic-web-search-mcp/blob/main/LICENSE)

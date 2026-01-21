@@ -1,6 +1,6 @@
 {
   "name": "synthetic-web-search-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "MCP server for Synthetic Web Search API",
   "main": "dist/index.js",
@@ -9,18 +9,35 @@
   },
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "start": "node dist/index.js",
     "dev": "node --loader ts-node/esm src/index.ts",
     "watch": "tsc --watch"
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    ".env.example"
+  ],
   "keywords": [
     "mcp",
     "model-context-protocol",
     "web-search",
-    "synthetic"
+    "synthetic",
+    "search",
+    "api"
   ],
-  "author": "",
+  "author": "parnexcodes",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parnexcodes/synthetic-web-search-mcp.git"
+  },
+  "homepage": "https://github.com/parnexcodes/synthetic-web-search-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/parnexcodes/synthetic-web-search-mcp/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "node-fetch": "^3.3.2"

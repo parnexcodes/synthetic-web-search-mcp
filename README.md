@@ -91,7 +91,7 @@ To use this MCP server with opencode, add the following to your opencode configu
 
 ```json
 {
-  "mcpServers": {
+  "mcp": {
     "synthetic-web-search": {
       "type": "local",
       "command": ["npx", "-y", "synthetic-web-search-mcp"],

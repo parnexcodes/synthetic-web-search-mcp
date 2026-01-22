@@ -27,7 +27,7 @@ bun add -g synthetic-web-search-mcp
 Add the MCP server to Claude Code with a single command:
 
 ```bash
-claude mcp add synthetic-web-search -e SYNTHETIC_API_KEY=your_api_key_here -- synthetic-web-search-mcp
+claude mcp add synthetic-web-search -e SYNTHETIC_API_KEY=your_api_key_here -- npx -y synthetic-web-search-mcp
 ```
 
 Replace `your_api_key_here` with your actual [Synthetic API key](https://api.synthetic.new/).
@@ -57,7 +57,8 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
 {
   "mcpServers": {
     "synthetic-web-search": {
-      "command": "synthetic-web-search-mcp",
+      "command": "npx",
+      "args": ["-y", "synthetic-web-search-mcp"],
       "env": {
         "SYNTHETIC_API_KEY": "your_actual_api_key_here"
       }
@@ -83,6 +84,27 @@ If installed locally (not globally), use:
 ```
 
 After adding the configuration, restart Claude Desktop. You can then use the web search tool in your conversations.
+
+## Usage with opencode
+
+To use this MCP server with opencode, add the following to your opencode configuration:
+
+```json
+{
+  "mcpServers": {
+    "synthetic-web-search": {
+      "type": "local",
+      "command": ["npx", "-y", "synthetic-web-search-mcp"],
+      "environment": {
+        "SYNTHETIC_API_KEY": "your_actual_api_key_here"
+      },
+      "enabled": true
+    }
+  }
+}
+```
+
+Replace `your_actual_api_key_here` with your actual [Synthetic API key](https://api.synthetic.new/). Restart opencode after adding the configuration.
 
 ## Testing with MCP Inspector
 

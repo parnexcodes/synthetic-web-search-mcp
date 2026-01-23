@@ -1,9 +1,6 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { z } from 'zod';
 
 const API_KEY = process.env.SYNTHETIC_API_KEY;
 
@@ -12,79 +9,47 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-// Create server instance
-const server = new Server(
-  {
-    name: 'synthetic-web-search-server',
-    version: '0.1.0',
-  },
-  {
-    capabilities: {
-      tools: {},
-    },
-  }
-);
+const server = new McpServer({
+  name: 'synthetic-web-search-server',
+  version: '0.1.4',
+});
 
-// List tools handler
-server.setRequestHandler(ListToolsRequestSchema, async () => {
+server.registerTool('search_web', {
+  description: 'Search the web using Synthetic API',
+  inputSchema: {
+    query: z.string().describe('Search query string'),
+  },
+}, async ({ query }) => {
+  if (!query) {
+    throw new Error('Query parameter is required');
+  }
+
+  const response = await fetch('https://api.synthetic.new/v2/search', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Synthetic API error: ${response.status} ${response.statusText} - ${errorText}`);
+  }
+
+  const data = await response.json();
+
   return {
-    tools: [
+    content: [
       {
-        name: 'search_web',
-        description: 'Search the web using Synthetic API',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            query: {
-              type: 'string',
-              description: 'Search query string',
-            },
-          },
-          required: ['query'],
-        },
+        type: 'text',
+        text: JSON.stringify(data.results, null, 2),
       },
     ],
   };
 });
 
-// Call tool handler
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  if (request.params.name === 'search_web') {
-    const query = request.params.arguments?.query as string;
-
-    if (!query) {
-      throw new Error('Query parameter is required');
-    }
-
-    const response = await fetch('https://api.synthetic.new/v2/search', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Synthetic API error: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-
-    const data = await response.json();
-
-    return {
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify(data.results, null, 2),
-        },
-      ],
-    };
-  }
-  throw new Error('Unknown tool: ' + request.params.name);
-});
-
-// Start server
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);

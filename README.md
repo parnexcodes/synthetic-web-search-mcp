@@ -10,7 +10,9 @@ This server provides a `search_web` tool that allows MCP clients to perform web 
 
 ## Installation
 
-Install globally to use with any MCP client:
+**Note:** For use with Claude Code, Claude Desktop, or opencode, no installation is required. These tools use `npx` to automatically download and run the package.
+
+Global installation is optional and only needed if you want to run the package directly from the command line without internet access:
 
 ```bash
 npm install -g synthetic-web-search-mcp
@@ -27,7 +29,7 @@ bun add -g synthetic-web-search-mcp
 Add the MCP server to Claude Code with a single command:
 
 ```bash
-claude mcp add synthetic-web-search -e SYNTHETIC_API_KEY=your_api_key_here -- npx -y synthetic-web-search-mcp
+claude mcp add synthetic-web-search -e SYNTHETIC_API_KEY=your_api_key_here -- npx -y synthetic-web-search-mcp@latest
 ```
 
 Replace `your_api_key_here` with your actual [Synthetic API key](https://api.synthetic.new/).
@@ -58,7 +60,7 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
   "mcpServers": {
     "synthetic-web-search": {
       "command": "npx",
-      "args": ["-y", "synthetic-web-search-mcp"],
+      "args": ["-y", "synthetic-web-search-mcp@latest"],
       "env": {
         "SYNTHETIC_API_KEY": "your_actual_api_key_here"
       }
@@ -94,7 +96,7 @@ To use this MCP server with opencode, add the following to your opencode configu
   "mcp": {
     "synthetic-web-search": {
       "type": "local",
-      "command": ["npx", "-y", "synthetic-web-search-mcp"],
+      "command": ["npx", "-y", "synthetic-web-search-mcp@latest"],
       "environment": {
         "SYNTHETIC_API_KEY": "your_actual_api_key_here"
       },
@@ -111,7 +113,7 @@ Replace `your_actual_api_key_here` with your actual [Synthetic API key](https://
 To test the server without Claude Desktop, use the MCP inspector:
 
 ```bash
-npx @modelcontextprotocol/inspector synthetic-web-search-mcp
+npx @modelcontextprotocol/inspector synthetic-web-search-mcp@latest
 ```
 
 This will open a web interface where you can:

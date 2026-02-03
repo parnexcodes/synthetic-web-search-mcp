@@ -8,22 +8,6 @@ A Model Context Protocol (MCP) server that exposes the Synthetic web search API 
 
 This server provides a `search_web` tool that allows MCP clients to perform web searches using the [Synthetic API](https://api.synthetic.new/). Search results are returned as formatted JSON containing URL, title, text, and published date fields.
 
-## Installation
-
-**Note:** For use with Claude Code, Claude Desktop, or opencode, no installation is required. These tools use `npx` to automatically download and run the package.
-
-Global installation is optional and only needed if you want to run the package directly from the command line without internet access:
-
-```bash
-npm install -g synthetic-web-search-mcp
-```
-
-Or with Bun:
-
-```bash
-bun add -g synthetic-web-search-mcp
-```
-
 ## Quick Start with Claude Code
 
 Add the MCP server to Claude Code with a single command:
@@ -33,20 +17,6 @@ claude mcp add synthetic-web-search -e SYNTHETIC_API_KEY=your_api_key_here -- np
 ```
 
 Replace `your_api_key_here` with your actual [Synthetic API key](https://api.synthetic.new/).
-
-## Configuration
-
-The server requires a Synthetic API key. Set it using the `SYNTHETIC_API_KEY` environment variable:
-
-```bash
-export SYNTHETIC_API_KEY=your_actual_api_key_here
-```
-
-Or create a `.env` file in the project root (copy `.env.example`):
-
-```env
-SYNTHETIC_API_KEY=your_actual_api_key_here
-```
 
 ## Usage with Claude Desktop
 
@@ -61,22 +31,6 @@ To use this MCP server with Claude Desktop, add the following to your Claude Des
     "synthetic-web-search": {
       "command": "npx",
       "args": ["-y", "synthetic-web-search-mcp@latest"],
-      "env": {
-        "SYNTHETIC_API_KEY": "your_actual_api_key_here"
-      }
-    }
-  }
-}
-```
-
-If installed locally (not globally), use:
-
-```json
-{
-  "mcpServers": {
-    "synthetic-web-search": {
-      "command": "node",
-      "args": ["/absolute/path/to/project/dist/index.js"],
       "env": {
         "SYNTHETIC_API_KEY": "your_actual_api_key_here"
       }
@@ -148,34 +102,6 @@ A JSON array of search results, each containing:
 - **Method**: POST
 - **Authentication**: Bearer token via `Authorization` header
 - **Request Body**: JSON with `query` field
-
-## Development
-
-Setup the development environment:
-
-```bash
-git clone https://github.com/parnexcodes/synthetic-web-search-mcp.git
-cd synthetic-web-search-mcp
-bun install
-```
-
-Build the project:
-
-```bash
-bun run build
-```
-
-Run the dev server with ts-node:
-
-```bash
-bun run dev
-```
-
-Watch for file changes and rebuild automatically:
-
-```bash
-bun run watch
-```
 
 ## Project Structure
 

@@ -62,18 +62,61 @@ To use this MCP server with opencode, add the following to your opencode configu
 
 Replace `your_actual_api_key_here` with your actual [Synthetic API key](https://api.synthetic.new/). Restart opencode after adding the configuration.
 
-## Testing with MCP Inspector
+## Local Development & Testing
 
-To test the server without Claude Desktop, use the MCP inspector:
+### 1. Prerequisites
+
+- Node.js 18+
+- A [Synthetic API key](https://api.synthetic.new/)
+
+### 2. Install & build
 
 ```bash
-npx @modelcontextprotocol/inspector synthetic-web-search-mcp@latest
+npm install
+npm run build
 ```
 
-This will open a web interface where you can:
-- List available tools
-- Test the `search_web` tool with different queries
-- View returned results in real-time
+### 3. Test with MCP Inspector
+
+The fastest way to verify the server interactively without any client configuration:
+
+```bash
+SYNTHETIC_API_KEY=your_key_here \
+  npx @modelcontextprotocol/inspector node dist/index.js
+```
+
+This opens a browser UI where you can invoke `search_web` directly. Try:
+- `query` only → `text` is capped at the default 1000 characters.
+- `query` + `max_text_length: 200` → tighter truncation to quickly scan results.
+- `query` + `max_text_length: 5000` → more content when you need full detail.
+
+### 4. Test with Claude Code (local build)
+
+```bash
+claude mcp add synthetic-web-search \
+  -e SYNTHETIC_API_KEY=your_key_here \
+  -- node /absolute/path/to/synthetic-web-search-mcp/dist/index.js
+```
+
+### 5. Test with Claude Desktop (local build)
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "synthetic-web-search": {
+      "command": "node",
+      "args": ["/absolute/path/to/synthetic-web-search-mcp/dist/index.js"],
+      "env": {
+        "SYNTHETIC_API_KEY": "your_key_here"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop after saving the file.
 
 ## Available Tools
 
@@ -83,6 +126,7 @@ Search the web using the Synthetic API.
 
 **Arguments:**
 - `query` (string, required): The search query string
+- `max_text_length` (number, optional, default: `1000`): Maximum number of characters to include in the `text` field of each result. Useful for preventing large snippets from flooding the context window. Results exceeding this length are truncated with `...`. Pass a larger value when you need the full content of a result.
 
 **Example:**
 ```
